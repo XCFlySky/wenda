@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by nowcoder on 2016/7/2.
@@ -76,7 +78,15 @@ public class LoginController {
                     cookie.setMaxAge(3600*24*5);
                 }
                 response.addCookie(cookie);
+
                 if (StringUtils.isNotBlank(next)) {
+                    Pattern pattern = Pattern.compile("^http.*");
+                    Matcher matcher = pattern.matcher(next);
+                    boolean b =matcher.matches();
+                    if (b==true){
+                        logger.error("不能以url为后缀");
+                        return "login";
+                    }
                     return "redirect:" + next;
                 }
                 return "redirect:/";
